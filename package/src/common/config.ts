@@ -54,16 +54,20 @@ export function readConfiguration(
   const root = getEnv("QUARTO_ROOT");
   const src = getEnv("QUARTO_SRC_PATH");
 
-  const pkg = getEnv("QUARTO_PACKAGE_PATH") || "package";
-  const out = join(pkg, getEnv("QUARTO_OUT_DIR") || "out");
+  const pkg = getEnv("QUARTO_PACKAGE_PATH", "package");
+  const out = join(pkg, getEnv("QUARTO_OUT_DIR", "out"));
 
-  const dist = getEnv("QUARTO_DIST_PATH") || "dist";
-  const shareName = getEnv("QUARTO_SHARE_DIR") || "share";
-  const share = getEnv("QUARTO_SHARE_PATH") ||
-    join(dist, shareName);
-  const binName = getEnv("QUARTO_BIN_DIR") || "bin";
-  const bin = getEnv("QUARTO_BIN_PATH") ||
-    join(dist, binName);
+  const dist = getEnv("QUARTO_DIST_PATH", "dist");
+  const shareName = getEnv("QUARTO_SHARE_DIR", "share");
+  const share = getEnv(
+    "QUARTO_SHARE_PATH",
+    join(dist, shareName),
+  );
+  const binName = getEnv("QUARTO_BIN_DIR", "bin");
+  const bin = getEnv(
+    "QUARTO_BIN_PATH",
+    join(dist, binName),
+  );
   const pkgWorkingBase = join(pkg, "pkg-working");
 
   const directoryInfo = {

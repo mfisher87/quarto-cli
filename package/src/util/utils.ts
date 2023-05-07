@@ -2,16 +2,16 @@ import { writeAll } from "streams/write_all.ts";
 import { CmdResult, runCmd } from "./cmd.ts";
 
 // Read an environment variable
-export function getEnv(name: string, defaultValue?: string) {
+export function getEnv(name: string, defaultValue?: string): string {
   const value = Deno.env.get(name);
-  if (!value) {
-    if (defaultValue === undefined) {
-      throw new Error("Missing environment variable: " + name);
-    } else {
-      return defaultValue;
-    }
-  } else {
+  if (value) {
     return value;
+  }
+
+  if (defaultValue === undefined) {
+    throw new Error("Missing environment variable: " + name);
+  } else {
+    return defaultValue;
   }
 }
 
