@@ -74,39 +74,39 @@ export async function configureDependency(
       archDep = dependency.architectureDependencies["x86_64"];
     }
   }
-  if (archDep) {
-    const platformDep = archDep[config.os];
-    const vendor = Deno.env.get("QUARTO_VENDOR_BINARIES");
-    let targetFile = "";
-    if (platformDep && (vendor === undefined || vendor === "true")) {
-      info(`Downloading ${dependency.name}`);
-
-      try {
-        targetFile = await downloadBinaryDependency(
-          dependency,
-          platformDep,
-          targetDir,
-        );
-      } catch (error) {
-        const msg =
-          `Failed to Download ${dependency.name}\nAre you sure that version ${dependency.version} of ${dependency.bucket} has been archived using './quarto-bld archive-bin-deps'?\n${error.message}`;
-        throw new Error(msg);
-      }
-    }
-
-    if (platformDep) {
-      info(`Configuring ${dependency.name}`);
-      await platformDep.configure(config, targetFile);
-    }
-
-    if (targetFile) {
-      info(`Cleaning up`);
-      Deno.removeSync(targetFile);
-    }
-  } else {
+  if (!archDep) {
     throw new Error(
       `The architecture ${config.arch} is missing the dependency ${dependency.name}`,
     );
+  }
+
+  const platformDep = archDep[config.os];
+  const vendor = Deno.env.get("QUARTO_VENDOR_BINARIES");
+  let targetFile = "";
+  if (platformDep && (vendor === undefined || vendor === "true")) {
+    info(`Downloading ${dependency.name}`);
+
+    try {
+      targetFile = await downloadBinaryDependency(
+        dependency,
+        platformDep,
+        targetDir,
+      );
+    } catch (error) {
+      const msg =
+        `Failed to Download ${dependency.name}\nAre you sure that version ${dependency.version} of ${dependency.bucket} has been archived using './quarto-bld archive-bin-deps'?\n${error.message}`;
+      throw new Error(msg);
+    }
+  }
+
+  if (platformDep) {
+    info(`Configuring ${dependency.name}`);
+    await platformDep.configure(config, targetFile);
+  }
+
+  if (targetFile) {
+    info(`Cleaning up`);
+    Deno.removeSync(targetFile);
   }
 
   info(`${dependency.name} complete.\n`);
