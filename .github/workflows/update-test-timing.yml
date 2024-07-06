@@ -10,6 +10,7 @@ name: Update timing test file
 jobs:
   run-timed-tests:
     name: Running Tests to produce timed file
+    if: github.event_name != 'schedule' || (github.event_name == 'schedule' && github.repository == 'quarto-dev/quarto-cli')
     uses: ./.github/workflows/test-smokes.yml
     with:
       buckets: ""
